@@ -1,111 +1,59 @@
-<!DOCTYPE html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TradeKids v2</title>
+
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeKids v2.1</title>
 <style>
 body{margin:0;background:#fff8e8;font-family:Arial}
-.wrap{max-width:430px;margin:auto;background:#fff;min-height:100vh;border-left:4px solid #222;border-right:4px solid #222}
+.wrap{max-width:430px;margin:auto;background:#fff;min-height:100vh;border-inline:4px solid #222}
 h1{margin:0;padding:14px;background:#ffd4e6;text-align:center}
-.player{padding:12px;border-bottom:3px dashed #999}
-.name{font-weight:bold;font-size:22px}
+.player{padding:12px;border-bottom:3px dashed #aaa}
+.name{font-size:22px;font-weight:bold}
 .items{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .item{padding:8px 10px;border:2px solid #222;border-radius:12px;background:#fafafa;cursor:pointer}
 .item.sel{background:#c8ffd4}
 .actions{display:flex;justify-content:space-around}
-button{font-size:28px;padding:10px 18px;border:none;border-radius:16px;cursor:pointer}
+button{font-size:28px;padding:10px 18px;border:none;border-radius:16px}
 .no{background:#ffb6b6}.add{background:#ffe48a}.ok{background:#bff5bf}
-#status{text-align:center;padding:14px;font-size:22px;font-weight:bold}
-dialog{border:none;border-radius:16px;padding:16px}
+#status{text-align:center;padding:12px;font-size:22px;font-weight:bold}
+dialog{border:none;border-radius:16px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.pick{border:1px solid #aaa;padding:8px;border-radius:10px;cursor:pointer;text-align:center}
+.pick{border:1px solid #aaa;border-radius:8px;padding:8px;cursor:pointer;text-align:center}
+canvas{position:fixed;inset:0;pointer-events:none}
 </style></head><body>
-<div class='wrap'>
+<canvas id="fx"></canvas>
+<div class="wrap">
 <h1>🎁 TradeKids</h1>
-
-<div class='player'>
-<div class='name'>👧 Helena</div>
-<div id='p1' class='items'></div>
-<div class='actions'>
-<button class='no' onclick='reject(1)'>❌</button>
-<button class='add' onclick='openAdd(1)'>➕</button>
-<button id='ok1' class='ok' onclick='accept(1)'>✅</button>
-</div>
+<div class="player"><div class="name">👧 Helena</div><div id="p1" class="items"></div>
+<div class="actions"><button class="no" onclick="reject(1)">❌</button><button class="add" onclick="openAdd(1)">➕</button><button id="ok1" class="ok" onclick="accept(1)">✅</button></div></div>
+<div id="status">🤝 Negociando...</div>
+<div class="player"><div class="name">👦 Tomás</div><div id="p2" class="items"></div>
+<div class="actions"><button class="no" onclick="reject(2)">❌</button><button class="add" onclick="openAdd(2)">➕</button><button id="ok2" class="ok" onclick="accept(2)">✅</button></div></div>
 </div>
 
-<div id='status'>🤝 Negociando...</div>
-
-<div class='player'>
-<div class='name'>👦 Tomás</div>
-<div id='p2' class='items'></div>
-<div class='actions'>
-<button class='no' onclick='reject(2)'>❌</button>
-<button class='add' onclick='openAdd(2)'>➕</button>
-<button id='ok2' class='ok' onclick='accept(2)'>✅</button>
-</div>
-</div>
-</div>
-
-<dialog id='dlg'>
-<h3>Elegí un objeto</h3>
-<div id='grid' class='grid'></div><br>
-<button onclick='dlg.close()'>Cerrar</button>
-</dialog>
+<dialog id="dlg"><h3>Elegí un objeto</h3><div id="grid" class="grid"></div><br><button onclick="dlg.close()">Cerrar</button></dialog>
 
 <script>
-const catalog=[
-"🧸 Peluche","🎀 Moño","🍭 Caramelo","⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro","🦖 Dino","🦕 T-Rex","🧩 Puzzle",
-"🪀 YoYo","🃏 Cartas","🪁 Barrilete","🛹 Skate","🚀 Cohete","🍫 Chocolate","🍪 Galletas","🧃 Jugo","🐱 Gatito","🐶 Perrito",
-"⭐ Sticker","💎 Piedra","🎨 Pinturas","✏️ Marcadores","⌚ Reloj","🧢 Gorra","🎁 Sorpresa","🎧 Auriculares","🪙 Moneda","🦄 Unicornio"
-];
-const p1=["🧸 Peluche","🎀 Moño","🍭 Caramelo","🦄 Unicornio","🧩 Puzzle","🎨 Pinturas","⭐ Sticker","🍫 Chocolate"];
-const p2=["⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro","🦖 Dino","🪁 Barrilete","🛹 Skate","🃏 Cartas"];
-let current=1,a1=false,a2=false;
-function render(id,list){
- const el=document.getElementById(id);
- el.innerHTML="";
- list.forEach(t=>{
-  let d=document.createElement("div");
-  d.className="item";
-  d.textContent=t;
-  d.onclick=()=>d.classList.toggle("sel");
-  el.appendChild(d);
- });
-}
+const catalog=["🧸 Peluche","🎀 Moño","🍭 Caramelo","⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro","🦖 Dino","🦕 T-Rex","🧩 Puzzle","🪀 YoYo","🃏 Cartas","🪁 Barrilete","🛹 Skate","🚀 Cohete","🍫 Chocolate","🍪 Galletas","🧃 Jugo","🐱 Gatito","🐶 Perrito","⭐ Sticker","💎 Piedra","🎨 Pinturas","✏️ Marcadores","⌚ Reloj","🧢 Gorra","🎁 Sorpresa","🎧 Auriculares","🪙 Moneda","🦄 Unicornio"];
+let p1=["🧸 Peluche","🎀 Moño","🍭 Caramelo","🦄 Unicornio"],p2=["⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro"];
+let a1=false,a2=false,current=1;
+function render(id,list){const e=document.getElementById(id);e.innerHTML="";list.forEach(x=>{let d=document.createElement("div");d.className="item";d.textContent=x;d.onclick=()=>d.classList.toggle("sel");e.appendChild(d);});}
 render("p1",p1);render("p2",p2);
-
-function openAdd(player){
- current=player;
- grid.innerHTML="";
- catalog.forEach(c=>{
-  let d=document.createElement("div");
-  d.className="pick";
-  d.textContent=c;
-  d.onclick=()=>{
-    (player===1?p1:p2).push(c);
-    render(player===1?"p1":"p2",player===1?p1:p2);
-    a1=false;a2=false;paint();
-    status.textContent="🤝 Se agregó un objeto. ¡Sigan negociando!";
-    dlg.close();
-  };
-  grid.appendChild(d);
- });
- dlg.showModal();
+function openAdd(player){current=player;grid.innerHTML="";catalog.forEach(c=>{let d=document.createElement("div");d.className="pick";d.textContent=c;d.onclick=()=>{(player===1?p1:p2).push(c);render(player===1?"p1":"p2",player===1?p1:p2);a1=false;a2=false;paint();status.textContent="➕ Se agregó un objeto. Ambos deben volver a aceptar.";dlg.close();};grid.appendChild(d)});dlg.showModal();}
+function paint(){ok1.style.background=a1?"#4ad96a":"#bff5bf";ok2.style.background=a2?"#4ad96a":"#bff5bf";}
+function accept(player){if(player===1){a1=true;}else{a2=true;}paint();
+if(a1&&a2){status.textContent="🎉 ¡INTERCAMBIO REALIZADO!";confetti();}
+else{status.textContent=(a1?"👧 Helena aceptó. ":"")+(a2?"👦 Tomás aceptó. ":"")+"Esperando al otro jugador...";}}
+function reject(player){a1=false;a2=false;paint();status.textContent=(player===1?"👧 Helena":"👦 Tomás")+" rechazó el intercambio 😢";}
+const cv=document.getElementById("fx"),ctx=cv.getContext("2d");
+function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener("resize",resize);
+function confetti(){
+ const parts=[...Array(180)].map(()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height,v:2+Math.random()*4,s:4+Math.random()*5,h:Math.random()*360}));
+ let frame=0;
+ (function anim(){
+   ctx.clearRect(0,0,cv.width,cv.height);
+   parts.forEach(p=>{p.y+=p.v;p.x+=Math.sin((p.y+p.h)/20);ctx.fillStyle=`hsl(${p.h},90%,60%)`;ctx.fillRect(p.x,p.y,p.s,p.s);});
+   frame++;
+   if(frame<180) requestAnimationFrame(anim); else ctx.clearRect(0,0,cv.width,cv.height);
+ })();
 }
-function paint(){
- ok1.style.background=a1?"#59d96d":"#bff5bf";
- ok2.style.background=a2?"#59d96d":"#bff5bf";
-}
-function accept(p){
- if(p===1){a1=true;status.textContent="👧 Helena aceptó";}
- else{a2=true;status.textContent="👦 Tomás aceptó";}
- paint();
- if(a1&&a2){
-   status.textContent="🎉 ¡INTERCAMBIO REALIZADO! 🎉";
-   document.body.animate([{background:"#fff8e8"},{background:"#dfffe0"},{background:"#fff8e8"}],{duration:900});
- }
-}
-function reject(p){
- a1=false;a2=false;paint();
- status.textContent=(p===1?"👧 Helena":"👦 Tomás")+" rechazó el intercambio 😢";
-}
-</script>
-</body></html>
+</script></body></html>
