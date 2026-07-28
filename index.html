@@ -1,59 +1,21 @@
-
-<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TradeKids v2.1</title>
-<style>
-body{margin:0;background:#fff8e8;font-family:Arial}
-.wrap{max-width:430px;margin:auto;background:#fff;min-height:100vh;border-inline:4px solid #222}
-h1{margin:0;padding:14px;background:#ffd4e6;text-align:center}
-.player{padding:12px;border-bottom:3px dashed #aaa}
-.name{font-size:22px;font-weight:bold}
-.items{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.item{padding:8px 10px;border:2px solid #222;border-radius:12px;background:#fafafa;cursor:pointer}
-.item.sel{background:#c8ffd4}
-.actions{display:flex;justify-content:space-around}
-button{font-size:28px;padding:10px 18px;border:none;border-radius:16px}
-.no{background:#ffb6b6}.add{background:#ffe48a}.ok{background:#bff5bf}
-#status{text-align:center;padding:12px;font-size:22px;font-weight:bold}
-dialog{border:none;border-radius:16px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.pick{border:1px solid #aaa;border-radius:8px;padding:8px;cursor:pointer;text-align:center}
-canvas{position:fixed;inset:0;pointer-events:none}
-</style></head><body>
-<canvas id="fx"></canvas>
-<div class="wrap">
-<h1>🎁 TradeKids</h1>
-<div class="player"><div class="name">👧 Helena</div><div id="p1" class="items"></div>
-<div class="actions"><button class="no" onclick="reject(1)">❌</button><button class="add" onclick="openAdd(1)">➕</button><button id="ok1" class="ok" onclick="accept(1)">✅</button></div></div>
-<div id="status">🤝 Negociando...</div>
-<div class="player"><div class="name">👦 Tomás</div><div id="p2" class="items"></div>
-<div class="actions"><button class="no" onclick="reject(2)">❌</button><button class="add" onclick="openAdd(2)">➕</button><button id="ok2" class="ok" onclick="accept(2)">✅</button></div></div>
+<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><style>
+body{font-family:Arial;background:#fff7df;margin:0}.app{max-width:430px;margin:auto}.sec{padding:10px;border-bottom:3px dashed #bbb}
+.offer{min-height:54px;border:2px dashed #666;border-radius:12px;padding:6px;display:flex;gap:6px;flex-wrap:wrap;background:#fff}
+.inv{display:flex;flex-wrap:wrap;gap:6px;max-height:170px;overflow:auto;margin:8px 0}.toy{font-size:28px;padding:4px;border:2px solid #aaa;border-radius:10px;cursor:pointer;background:#fff}
+.sel{border-color:#ff4fa0;background:#ffe2f1}.actions{display:flex;justify-content:space-around}button{font-size:28px;padding:8px 16px;border:none;border-radius:14px}
+canvas{position:fixed;inset:0;pointer-events:none}#msg{text-align:center;font-size:20px;font-weight:bold;padding:8px}
+</style></head><body><canvas id='cv'></canvas><div class='app'>
+<div class='sec'><h2>👧 Helena</h2><div id='o1' class='offer'></div><div class='inv'><div class='toy' onclick='sel(this)'>🧸</div><div class='toy' onclick='sel(this)'>🦄</div><div class='toy' onclick='sel(this)'>🐱</div><div class='toy' onclick='sel(this)'>🐶</div><div class='toy' onclick='sel(this)'>🐼</div><div class='toy' onclick='sel(this)'>🦁</div><div class='toy' onclick='sel(this)'>🐯</div><div class='toy' onclick='sel(this)'>🦊</div><div class='toy' onclick='sel(this)'>🐸</div><div class='toy' onclick='sel(this)'>🦖</div><div class='toy' onclick='sel(this)'>🦕</div><div class='toy' onclick='sel(this)'>🚗</div><div class='toy' onclick='sel(this)'>🚒</div><div class='toy' onclick='sel(this)'>🚜</div><div class='toy' onclick='sel(this)'>🚀</div><div class='toy' onclick='sel(this)'>✈️</div><div class='toy' onclick='sel(this)'>🚁</div><div class='toy' onclick='sel(this)'>🛹</div><div class='toy' onclick='sel(this)'>🛴</div><div class='toy' onclick='sel(this)'>🚲</div><div class='toy' onclick='sel(this)'>⚽</div><div class='toy' onclick='sel(this)'>🏀</div><div class='toy' onclick='sel(this)'>⚾</div><div class='toy' onclick='sel(this)'>🎾</div><div class='toy' onclick='sel(this)'>🎮</div><div class='toy' onclick='sel(this)'>🎲</div><div class='toy' onclick='sel(this)'>🃏</div><div class='toy' onclick='sel(this)'>🎨</div><div class='toy' onclick='sel(this)'>📚</div><div class='toy' onclick='sel(this)'>⭐</div></div><div class='actions'><button onclick='rej()'>❌</button><button onclick='add(1)'>➕</button><button id='b1' onclick='acc(1)'>✅</button></div></div>
+<div id='msg'>🤝 Elegí un juguete y tocá ➕</div>
+<div class='sec'><h2>👦 Tomás</h2><div id='o2' class='offer'></div><div class='inv'><div class='toy' onclick='sel(this)'>🚙</div><div class='toy' onclick='sel(this)'>🚓</div><div class='toy' onclick='sel(this)'>🏎️</div><div class='toy' onclick='sel(this)'>🚂</div><div class='toy' onclick='sel(this)'>🛶</div><div class='toy' onclick='sel(this)'>⛵</div><div class='toy' onclick='sel(this)'>🚀</div><div class='toy' onclick='sel(this)'>🤖</div><div class='toy' onclick='sel(this)'>👾</div><div class='toy' onclick='sel(this)'>🐵</div><div class='toy' onclick='sel(this)'>🐨</div><div class='toy' onclick='sel(this)'>🐼</div><div class='toy' onclick='sel(this)'>🦒</div><div class='toy' onclick='sel(this)'>🦓</div><div class='toy' onclick='sel(this)'>🐢</div><div class='toy' onclick='sel(this)'>🐬</div><div class='toy' onclick='sel(this)'>🦈</div><div class='toy' onclick='sel(this)'>⚽</div><div class='toy' onclick='sel(this)'>🏈</div><div class='toy' onclick='sel(this)'>🏐</div><div class='toy' onclick='sel(this)'>🎯</div><div class='toy' onclick='sel(this)'>🎳</div><div class='toy' onclick='sel(this)'>🎸</div><div class='toy' onclick='sel(this)'>🎹</div><div class='toy' onclick='sel(this)'>🥁</div><div class='toy' onclick='sel(this)'>🍕</div><div class='toy' onclick='sel(this)'>🍔</div><div class='toy' onclick='sel(this)'>🍟</div><div class='toy' onclick='sel(this)'>🍩</div><div class='toy' onclick='sel(this)'>🍭</div></div><div class='actions'><button onclick='rej()'>❌</button><button onclick='add(2)'>➕</button><button id='b2' onclick='acc(2)'>✅</button></div></div>
 </div>
-
-<dialog id="dlg"><h3>Elegí un objeto</h3><div id="grid" class="grid"></div><br><button onclick="dlg.close()">Cerrar</button></dialog>
-
 <script>
-const catalog=["🧸 Peluche","🎀 Moño","🍭 Caramelo","⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro","🦖 Dino","🦕 T-Rex","🧩 Puzzle","🪀 YoYo","🃏 Cartas","🪁 Barrilete","🛹 Skate","🚀 Cohete","🍫 Chocolate","🍪 Galletas","🧃 Jugo","🐱 Gatito","🐶 Perrito","⭐ Sticker","💎 Piedra","🎨 Pinturas","✏️ Marcadores","⌚ Reloj","🧢 Gorra","🎁 Sorpresa","🎧 Auriculares","🪙 Moneda","🦄 Unicornio"];
-let p1=["🧸 Peluche","🎀 Moño","🍭 Caramelo","🦄 Unicornio"],p2=["⚽ Pelota","🚗 Auto","🎮 Videojuego","📚 Libro"];
-let a1=false,a2=false,current=1;
-function render(id,list){const e=document.getElementById(id);e.innerHTML="";list.forEach(x=>{let d=document.createElement("div");d.className="item";d.textContent=x;d.onclick=()=>d.classList.toggle("sel");e.appendChild(d);});}
-render("p1",p1);render("p2",p2);
-function openAdd(player){current=player;grid.innerHTML="";catalog.forEach(c=>{let d=document.createElement("div");d.className="pick";d.textContent=c;d.onclick=()=>{(player===1?p1:p2).push(c);render(player===1?"p1":"p2",player===1?p1:p2);a1=false;a2=false;paint();status.textContent="➕ Se agregó un objeto. Ambos deben volver a aceptar.";dlg.close();};grid.appendChild(d)});dlg.showModal();}
-function paint(){ok1.style.background=a1?"#4ad96a":"#bff5bf";ok2.style.background=a2?"#4ad96a":"#bff5bf";}
-function accept(player){if(player===1){a1=true;}else{a2=true;}paint();
-if(a1&&a2){status.textContent="🎉 ¡INTERCAMBIO REALIZADO!";confetti();}
-else{status.textContent=(a1?"👧 Helena aceptó. ":"")+(a2?"👦 Tomás aceptó. ":"")+"Esperando al otro jugador...";}}
-function reject(player){a1=false;a2=false;paint();status.textContent=(player===1?"👧 Helena":"👦 Tomás")+" rechazó el intercambio 😢";}
-const cv=document.getElementById("fx"),ctx=cv.getContext("2d");
-function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener("resize",resize);
-function confetti(){
- const parts=[...Array(180)].map(()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height,v:2+Math.random()*4,s:4+Math.random()*5,h:Math.random()*360}));
- let frame=0;
- (function anim(){
-   ctx.clearRect(0,0,cv.width,cv.height);
-   parts.forEach(p=>{p.y+=p.v;p.x+=Math.sin((p.y+p.h)/20);ctx.fillStyle=`hsl(${p.h},90%,60%)`;ctx.fillRect(p.x,p.y,p.s,p.s);});
-   frame++;
-   if(frame<180) requestAnimationFrame(anim); else ctx.clearRect(0,0,cv.width,cv.height);
- })();
-}
+let cur=null,a1=false,a2=false;
+function sel(e){document.querySelectorAll('.toy').forEach(x=>x!==e&&x.classList.remove('sel'));e.classList.toggle('sel');cur=e;}
+function add(p){if(!cur)return;let c=cur.cloneNode(true);c.className='toy';c.onclick=()=>c.remove();document.getElementById('o'+p).appendChild(c);a1=a2=false;paint();msg.textContent='➕ Objeto agregado';}
+function paint(){b1.style.background=a1?'#61e56f':'#ddd';b2.style.background=a2?'#61e56f':'#ddd';}
+function acc(p){if(p==1)a1=true;else a2=true;paint();if(a1&&a2){msg.textContent='🎉 ¡INTERCAMBIO REALIZADO!';conf();}else msg.textContent='Esperando al otro jugador...';}
+function rej(){a1=a2=false;paint();msg.textContent='😢 Cancelado';}
+const ctx=cv.getContext('2d');function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();onresize=rs;
+function conf(){let P=[...Array(180)].map(()=>({x:Math.random()*cv.width,y:-20,v:2+Math.random()*4,s:4+Math.random()*5,h:Math.random()*360}));let f=0;(function A(){ctx.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.y+=p.v;ctx.fillStyle='hsl('+p.h+',90%,60%)';ctx.fillRect(p.x,p.y,p.s,p.s)});if(f++<160)requestAnimationFrame(A);})();}paint();
 </script></body></html>
